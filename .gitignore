@@ -1,0 +1,10 @@
+*.class
+*.o
+*.cfg
+launcher/*.exe
+*.bat
+*.zip
+obj/
+bin/
+dispatch/
+.settings/

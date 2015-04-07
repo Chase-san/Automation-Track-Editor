@@ -1,0 +1,24 @@
+1 VERSIONINFO
+FILEVERSION     1,0,2,0
+{
+	BLOCK "StringFileInfo"
+	{
+		BLOCK "040904E4"
+		{
+			VALUE "FileDescription", "Launcher"
+			VALUE "InternalName", "Java Launcher"
+			VALUE "OriginalFilename", "launcher.exe"
+			VALUE "ProductName", "JLauncher"
+			VALUE "ProductVersion", "1.03"
+		}
+	}
+	BLOCK "VarFileInfo"
+	{
+		VALUE "Translation", 0x409, 1200
+	}
+}
+STRINGTABLE
+{
+	0,	"trackedit.jar"
+}
+IDI_MAIN_ICON ICON "icon.ico"

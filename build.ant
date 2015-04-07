@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="trackedit" default="package" basedir="." >
+	
+	<property name="main-class" value="org.csdgn.automation.editor.TrackEditor" />
+		
+	<property name="out.dir" value="dispatch" />
+	<property name="lib.dir" value="lib" />
+	<property name="resource.dir" value="resource" />
+	
+	<path id="build.classpath">
+	  <fileset dir="${basedir}">
+	     <include name="${lib.dir}/*.jar"/>
+	  </fileset>
+	</path>
+	
+	<manifestclasspath property="lib.list" jarfile="${jar.file}">
+	   <classpath refid="build.classpath" />
+	</manifestclasspath>
+	
+	<property name="jar.file" value="${ant.project.name}.jar" />
+	
+	<target name="compile">
+		<!-- Delete anything old we have -->
+		<delete dir="bin" failonerror="false" />
+		<mkdir dir="bin" />
+		
+		<!-- Compile the source -->
+		<javac srcdir="src" destdir="bin" includeAntRuntime="no" encoding="UTF-8" classpathref="build.classpath"
+			fork="true" optimize="on" target="1.8" source="1.8" debug="on" compiler="javac1.8" />
+	</target>
+	
+	<target name="dispatch" depends="compile">
+		<delete dir="${out.dir}" failonerror="false" />
+		<mkdir dir="${out.dir}" />
+		<mkdir dir="${out.dir}/${lib.dir}" />
+		
+		<copy todir="${out.dir}/${lib.dir}">
+			<fileset dir="${lib.dir}" />
+		</copy>
+		
+		<copy todir="${out.dir}" file="README.md" failonerror="false" />
+		<copy todir="${out.dir}" file="launcher/${ant.project.name}.exe" failonerror="false" />
+		
+		<!-- build jar -->
+		<jar duplicate="add" basedir="bin" destfile="${out.dir}/${jar.file}" compress="true">
+			<include name="**/*.class" />
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}"/>
+				<attribute name="Class-Path" value=". ${lib.list}"/>
+            </manifest>
+		</jar>
+		
+		<!-- add resources to zip file -->
+		<zip destfile="${out.dir}/${jar.file}" basedir="${resource.dir}" update="true" />
+	</target>
+	
+	<target name="package" depends="dispatch">
+		<!-- TODO proper versioning between ant and java -->
+		<zip destfile="${ant.project.name}.zip" basedir="${out.dir}" />
+	</target>
+</project>
