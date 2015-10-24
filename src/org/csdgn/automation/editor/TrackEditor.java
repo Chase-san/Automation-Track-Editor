@@ -79,7 +79,7 @@ public class TrackEditor extends JFrame {
 
 	private static final long serialVersionUID = 1183587866699616635L;
 
-	public static final String VERSION = "TrackEdit v0.13";
+	public static final String VERSION = "TrackEdit v0.14";
 	public static final String SETTINGS = "trackedit.cfg";
 
 	private JPanel chartPanel;
@@ -117,7 +117,7 @@ public class TrackEditor extends JFrame {
 
 	private JMenuItem mntmAddLap;
 	private JMenuItem mntmRoundDistances;
-	private JMenuItem mntmFlipCambers;
+	private JMenuItem mntmFlipCambers;	
 
 	public TrackEditor() {
 		ready = false;
@@ -125,7 +125,7 @@ public class TrackEditor extends JFrame {
 		chooser = new JFileChooser();
 		chooser.setMultiSelectionEnabled(false);
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		File base = new File(chooser.getCurrentDirectory(), "Automation/Tracks");
+		File base = new File(chooser.getCurrentDirectory(), "My Games/Automation/Tracks");
 		if(base.exists()) {
 			chooser.setCurrentDirectory(base);
 		}
@@ -495,6 +495,7 @@ public class TrackEditor extends JFrame {
 
 		rbmiPrecise = new JRadioButtonMenuItem("Precise");
 		layoutButtonGroup.add(rbmiPrecise);
+		rbmiPrecise.setEnabled(false);
 		rbmiPrecise.setSelected(true);
 		rbmiPrecise.addActionListener(e -> {
 			if(!ready) {
@@ -506,7 +507,7 @@ public class TrackEditor extends JFrame {
 		rbmiPrecise.setMnemonic(KeyEvent.VK_P);
 		mnSettings.add(rbmiPrecise);
 
-		rbmiSimulate = new JRadioButtonMenuItem("Simulated (Experimental)");
+		rbmiSimulate = new JRadioButtonMenuItem("Simulator");
 		layoutButtonGroup.add(rbmiSimulate);
 		rbmiSimulate.setEnabled(false);
 		rbmiSimulate.addActionListener(e -> {
@@ -519,6 +520,7 @@ public class TrackEditor extends JFrame {
 		rbmiSimulate.setMnemonic(KeyEvent.VK_S);
 
 		mnSettings.add(rbmiSimulate);
+		
 
 		JMenu mnHelp = new JMenu("Help");
 		mnHelp.setMnemonic(KeyEvent.VK_H);
