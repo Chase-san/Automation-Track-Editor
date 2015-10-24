@@ -2,12 +2,12 @@ package org.csdgn.automation.track;
 
 public class TrackSegment {
 
-	public int layout;
-	public double layoutInfo;
-	public double cornerRadius;
-	public double slope;
-	public int sportiness;
-	public double camber;
+	public int layout; //1
+	public double layoutInfo; //2
+	public double cornerRadius; //3
+	public double slope; //4
+	public int sportiness; //5
+	public double camber; //6
 
 	public TrackSegment() {
 		layout = 0;
