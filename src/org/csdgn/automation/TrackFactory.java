@@ -152,7 +152,7 @@ public class TrackFactory {
 		buf.append("Track = {\n");
 		buf.append("\tName = \"" + track.name + "\",\n");
 		buf.append("\tStart = { " + track.startX + ", " + track.startY + " },\n");
-		buf.append("\tStart_Angle = " + ftswmp(-track.startAngle) + "\n");
+		buf.append("\tStart_Angle = " + ftswmp(-track.startAngle) + ",\n");
 		buf.append("\tScale = " + ftswmp(track.scale) + ",\n");
 
 		buf.append("\tLayout = {");

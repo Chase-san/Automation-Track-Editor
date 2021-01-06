@@ -19,6 +19,7 @@ import java.util.Properties;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -49,6 +50,7 @@ import org.csdgn.maru.AppToolkit;
 import org.csdgn.maru.Files;
 import org.csdgn.maru.swing.Accordion;
 import org.csdgn.maru.swing.ImagePanel;
+import org.csdgn.maru.swing.MouseEventAdapter;
 import org.csdgn.maru.swing.TableLayout;
 
 import com.xeiam.xchart.XChartPanel;
@@ -105,7 +107,7 @@ public class TrackEditor extends JFrame {
 	private JSpinner spnStartX;
 	private JSpinner spnStartY;
 	private JSpinner spnStartAngle;
-	
+
 	private Track track;
 	private Track2DRenderer trackRenderer;
 	private TrackRunner trackRunner;
@@ -157,28 +159,9 @@ public class TrackEditor extends JFrame {
 		images.add(overlay = new ImagePanel());
 		images.add(image = new ImagePanel());
 
-		overlay.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				tryMouseSelect(e.getX(), e.getY());
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-		});
+		overlay.addMouseListener(new MouseEventAdapter.Clicked(e -> {
+			tryMouseSelect(e.getX(), e.getY());
+		}));
 
 		chartPanel = new JPanel();
 		imageSplit.setRightComponent(chartPanel);
@@ -207,8 +190,42 @@ public class TrackEditor extends JFrame {
 			updateElevationChart();
 		});
 
+		sidebar.add(createGlobalControlPanel(), BorderLayout.NORTH);
+
+		overlay.setPreferredSize(new Dimension(1280, 720));
+		image.setPreferredSize(new Dimension(1280, 720));
+
+		setJMenuBar(createMenu());
+
+		pack();
+
+		loadSettings();
+
+		ready = true;
+		instance = this;
+	}
+
+	protected void addSegment(TrackSegmentPanel panel) {
+		// after this segment add a new one
+		int n = pages.indexOfPage(panel);
+
+		TrackSegment seg = new TrackSegment();
+		pages.insertPage(new TrackSegmentPanel(seg, n + 1), n + 1);
+
+		track.segments.add(n + 1, seg);
+
+		trackRunner.markDirty();
+
+		pages.showPage(n + 1);
+
+		lblSegmentCount.setText("" + track.segments.size());
+
+		updatePageNames();
+		updateTrack();
+	}
+
+	private JComponent createGlobalControlPanel() {
 		JPanel panel = new JPanel();
-		sidebar.add(panel, BorderLayout.NORTH);
 
 		panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 		panel.setLayout(new TableLayout(4, 4, true));
@@ -282,9 +299,7 @@ public class TrackEditor extends JFrame {
 			updateTrack();
 		});
 		panel.add(spnStartY, "x=2; y=last");
-		
-		
-		
+
 		JLabel lblStartAngle = new JLabel("Angle", SwingConstants.TRAILING);
 		panel.add(lblStartAngle, "x=0; y=last+1");
 
@@ -292,7 +307,7 @@ public class TrackEditor extends JFrame {
 		spnStartAngle.setEnabled(false);
 		spnStartAngle.setModel(new SpinnerNumberModel(0.0, -180, 180, 0.1));
 		spnStartAngle.addChangeListener(e -> {
-			track.startAngle = ((double) spnStartAngle.getValue()) * (Math.PI/180.0);
+			track.startAngle = ((double) spnStartAngle.getValue()) * (Math.PI / 180.0);
 			updateTrack();
 		});
 		panel.add(spnStartAngle, "x=1; y=last; colspan=2");
@@ -329,12 +344,12 @@ public class TrackEditor extends JFrame {
 		panel.add(lblElevation, "x=0; y=last+1");
 
 		panel.add(new JLabel("Start/Finish Diff", SwingConstants.LEFT), "x=1; y=last");
-		
+
 		lblEleEnds = new JLabel("0 m", SwingConstants.TRAILING);
 		lblEleEnds.setToolTipText("This is the difference between the elevation at the start and end of the track.");
 		panel.add(lblEleEnds, "x=2; y=last");
 		panel.add(new JLabel("Min/Max Diff", SwingConstants.LEFT), "x=1; y=last+1");
-		
+
 		lblEleDiff = new JLabel("0 m", SwingConstants.TRAILING);
 		lblEleDiff.setToolTipText("This is the difference between the maximum and minimum elevation.");
 		panel.add(lblEleDiff, "x=2; y=last");
@@ -345,41 +360,7 @@ public class TrackEditor extends JFrame {
 		lblSegmentCount = new JLabel("0", SwingConstants.TRAILING);
 		panel.add(lblSegmentCount, "x=2; y=last");
 
-		overlay.setPreferredSize(new Dimension(1280, 720));
-		image.setPreferredSize(new Dimension(1280, 720));
-
-		setJMenuBar(createMenu());
-
-		pack();
-
-		loadSettings();
-
-		ready = true;
-		instance = this;
-
-		// TEMP
-		// loadTrack(new
-		// File("C:\\Users\\Chase\\Documents\\Automation\\Tracks\\Grand Valley
-		// Speedway"));
-	}
-
-	protected void addSegment(TrackSegmentPanel panel) {
-		// after this segment add a new one
-		int n = pages.indexOfPage(panel);
-
-		TrackSegment seg = new TrackSegment();
-		pages.insertPage(new TrackSegmentPanel(seg, n + 1), n + 1);
-
-		track.segments.add(n + 1, seg);
-
-		trackRunner.markDirty();
-
-		pages.showPage(n + 1);
-
-		lblSegmentCount.setText("" + track.segments.size());
-
-		updatePageNames();
-		updateTrack();
+		return panel;
 	}
 
 	private String colorToHexString(Color color) {
@@ -612,7 +593,7 @@ public class TrackEditor extends JFrame {
 				trackRenderer.setSplitColor(Color.decode("#" + color));
 			}
 		} catch (Exception e) {
-			// ignore failure!
+			System.err.println("Failed to load settings.");
 		}
 
 	}
@@ -625,7 +606,7 @@ public class TrackEditor extends JFrame {
 		path = file;
 		if (!new File(file, "track.png").exists() || !new File(file, "track.lua").exists()) {
 			AppToolkit.showError(instance,
-					"Could not find one of track.png or track.lua, make sure this is a valid track folder.");
+					"Could not find track.png or track.lua, make sure you selected a valid track folder.");
 			return;
 		}
 
@@ -769,11 +750,11 @@ public class TrackEditor extends JFrame {
 		spnScale.setValue(track.scale);
 		spnStartX.setValue(track.startX);
 		spnStartY.setValue(track.startY);
-		double angle = track.startAngle * (180.0/Math.PI);
-		while(angle < -180) {
+		double angle = track.startAngle * (180.0 / Math.PI);
+		while (angle < -180) {
 			angle += 360;
 		}
-		while(angle > 180) {
+		while (angle > 180) {
 			angle -= 360;
 		}
 		spnStartAngle.setValue(angle);
