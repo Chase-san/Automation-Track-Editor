@@ -93,6 +93,11 @@ public class AppToolkit {
 		return directory = new File(".");
 	}
 
+	/**
+	 * Gets the given resource as a input stream
+	 * @param resource resource to get
+	 * @returnthe input stream, or null on failure
+	 */
 	public static InputStream getLocalResource(String resource) {
 		// check within current directory first
 		try {

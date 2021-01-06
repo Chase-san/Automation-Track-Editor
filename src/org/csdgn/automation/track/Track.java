@@ -8,6 +8,7 @@ public class Track {
 	public String name;
 	public int startX;
 	public int startY;
+	public double startAngle;
 	public double scale;
 	public double split1;
 	public double split2;
@@ -40,6 +41,7 @@ public class Track {
 		track.name = "New Track";
 		track.startX = 640;
 		track.startY = 360;
+		track.startAngle = 0;
 		track.scale = 1.0;
 		track.split1 = 0;
 		track.split2 = 0;

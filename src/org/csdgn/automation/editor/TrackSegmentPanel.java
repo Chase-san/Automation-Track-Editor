@@ -2,6 +2,7 @@ package org.csdgn.automation.editor;
 
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -10,11 +11,11 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 import org.csdgn.automation.track.TrackLayoutType;
 import org.csdgn.automation.track.TrackSegment;
-
-import net.miginfocom.swing.MigLayout;
+import org.csdgn.maru.swing.TableLayout;
 
 import java.awt.GridLayout;
 
@@ -24,7 +25,7 @@ public class TrackSegmentPanel extends JPanel {
 	private final JComboBox<String> cmbType;
 	private boolean ready = false;
 	private final JLabel lblLength;
-	private final JLabel lblLengthSub;
+	private final JLabel lblLengthUnits;
 
 	protected TrackSegment seg;
 	private final JSlider sldSport;
@@ -39,33 +40,41 @@ public class TrackSegmentPanel extends JPanel {
 	public TrackSegmentPanel(TrackSegment seg, int index) {
 		this.seg = seg;
 
-		setLayout(new MigLayout("", "[grow][grow]", "[][][][][][][][]"));
+		setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		setLayout(new TableLayout(4, 4, true));
 
-		JButton btnUp = new JButton("Up ▲");
+		JPanel upperButtonPanel = new JPanel(new GridLayout(1, 2));
+		add(upperButtonPanel, "x=0; y=0; colspan=3");
+
+		JButton btnUp = new JButton("Up \u25B2");
 		btnUp.addActionListener(e -> {
-			if(!ready)
+			if (!ready) {
 				return;
+			}
 			TrackEditor.instance.moveUpSegment(this);
 		});
-		add(btnUp, "cell 0 0,growx");
+		upperButtonPanel.add(btnUp);
 
-		JButton btnDown = new JButton("Down ▼");
+		JButton btnDown = new JButton("Down \u25BC");
 		btnDown.addActionListener(e -> {
-			if(!ready)
+			if (!ready) {
 				return;
+			}
 			TrackEditor.instance.moveDownSegment(this);
 		});
-		add(btnDown, "cell 1 0,growx");
+		upperButtonPanel.add(btnDown);
 
-		JLabel lblType = new JLabel("Type");
-		add(lblType, "cell 0 1,alignx trailing");
+		/* --------------------------------------------------- */
+
+		JLabel lblType = new JLabel("Type", SwingConstants.RIGHT);
+		add(lblType, "x=0; y=last+1");
 
 		cmbType = new JComboBox<String>();
 		cmbType.setActionCommand("t");
 		cmbType.addActionListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
-			switch(cmbType.getSelectedIndex()) {
+			switch (cmbType.getSelectedIndex()) {
 			case 0:
 				setStraight(seg.layout != TrackLayoutType.STRAIGHT.number);
 				seg.layout = TrackLayoutType.STRAIGHT.number;
@@ -85,25 +94,31 @@ public class TrackSegmentPanel extends JPanel {
 		});
 		cmbType.setModel(new DefaultComboBoxModel<String>(new String[] { "Straight", "Left", "Right" }));
 
-		add(cmbType, "cell 1 1,growx");
+		add(cmbType, "x=1; y=last; colspan=2");
 
-		lblLength = new JLabel("Length");
-		add(lblLength, "cell 0 2,alignx trailing");
+		/* --------------------------------------------------- */
+
+		lblLength = new JLabel("Length", SwingConstants.RIGHT);
+		add(lblLength, "x=0; y=last+1");
 
 		spnLength = new JSpinner();
 		spnLength.addChangeListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
 			seg.layoutInfo = (double) spnLength.getValue();
 			update();
 		});
-		add(spnLength, "flowx,cell 1 2,growx");
 
-		lblLengthSub = new JLabel("m");
-		add(lblLengthSub, "cell 1 2");
+		add(spnLength, "x=1; y=last");
 
-		JLabel lblCornerRadius = new JLabel("Radius");
-		add(lblCornerRadius, "cell 0 3,alignx trailing");
+		lblLengthUnits = new JLabel("m");
+		lblLengthUnits.setPreferredSize(new Dimension(20, 20));
+		add(lblLengthUnits, "x=2; y=last");
+
+		/* --------------------------------------------------- */
+
+		JLabel lblCornerRadius = new JLabel("Radius", SwingConstants.RIGHT);
+		add(lblCornerRadius, "x=0; y=last+1");
 
 		spnRadius = new JSpinner();
 		spnRadius.setToolTipText("<html>This is for defining the corner radii (in meters). The larger<br>"
@@ -111,18 +126,21 @@ public class TrackSegmentPanel extends JPanel {
 		spnRadius.setModel(new SpinnerNumberModel(1.0, 0.0, 99999.0, 0.1));
 		spnRadius.setEnabled(false);
 		spnRadius.addChangeListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
 			seg.cornerRadius = (double) spnRadius.getValue();
 			update();
 		});
-		add(spnRadius, "flowx,cell 1 3,growx");
+		add(spnRadius, "x=1; y=last");
 
-		JLabel lblM_1 = new JLabel("m");
-		add(lblM_1, "cell 1 3");
+		JLabel lblRadiusUnits = new JLabel("m");
+		lblRadiusUnits.setPreferredSize(new Dimension(20, 20));
+		add(lblRadiusUnits, "x=2; y=last");
 
-		lblSlope = new JLabel("Slope");
-		add(lblSlope, "cell 0 4,alignx trailing");
+		/* --------------------------------------------------- */
+
+		lblSlope = new JLabel("Slope", SwingConstants.RIGHT);
+		add(lblSlope, "x=0; y=last+1");
 
 		spnSlope = new JSpinner();
 		spnSlope.setModel(new SpinnerNumberModel(0.0, -100.0, 100.0, 0.1));
@@ -131,58 +149,68 @@ public class TrackSegmentPanel extends JPanel {
 				+ "Don't make slopes too steep or low-powered cars won't be able to make it<br>"
 				+ "around the track resulting in errors.</html>");
 		spnSlope.addChangeListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
 			seg.slope = (double) spnSlope.getValue();
 			updateHelperImages();
 			update();
 		});
-		add(spnSlope, "flowx,cell 1 4,growx");
+		add(spnSlope, "x=1; y=last");
 
-		JLabel lblSportiness = new JLabel("Sportiness");
-		add(lblSportiness, "cell 0 5,alignx trailing");
+		JLabel lblSlopeUnits = new JLabel("%");
+		lblSlopeUnits.setPreferredSize(new Dimension(20, 20));
+		add(lblSlopeUnits, "x=2; y=last");
+
+		/* --------------------------------------------------- */
+
+		JLabel lblSportiness = new JLabel("Sportiness", SwingConstants.RIGHT);
+		add(lblSportiness, "x=0; y=last+1");
 
 		sldSport = new JSlider();
 		sldSport.setPaintLabels(true);
-		sldSport.setPreferredSize(new Dimension(20, 23));
+		sldSport.setPreferredSize(new Dimension(20, 45));
 		sldSport.setPaintTicks(true);
 		sldSport.setToolTipText("<html>This is for defining how difficult to drive the segments are,<br>"
 				+ "You can imagine that this is the bumpiness of the track. The<br>"
-				+ "simulation looks at these values and punishes cars with a high<br>" + "sportiness/tameness ratio.</html>");
+				+ "simulation looks at these values and punishes cars with a high<br>"
+				+ "sportiness/tameness ratio.</html>");
 		sldSport.setSnapToTicks(true);
 		sldSport.setMajorTickSpacing(1);
 		sldSport.setMaximum(5);
 		sldSport.addChangeListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
 			seg.sportiness = sldSport.getValue();
 			update();
 		});
-		add(sldSport, "cell 1 5,growx");
+		add(sldSport, "x=1; y=last; colspan=2");
 
-		lblCamber = new JLabel("Camber");
-		add(lblCamber, "cell 0 6,alignx trailing");
+		/* --------------------------------------------------- */
 
-		JLabel label = new JLabel("%");
-		add(label, "cell 1 4");
+		lblCamber = new JLabel("Camber", SwingConstants.RIGHT);
+		add(lblCamber, "x=0; y=last+1");
 
 		spnCamber = new JSpinner();
 		spnCamber.setToolTipText("<html>This defines the camber or banking of the track (in degrees).<br>"
-				+ "Negative numbers make it banked to the left (/) and positive<br>"
-				+ "numbers banked to the right (\\) when you are facing in driving<br>"
-				+ "direction. Values up to 45 degrees should be fine, use everything<br>" + "above at your own risk.</html>");
+				+ "Negative numbers make it banked to the left and positive<br>"
+				+ "numbers banked to the right when you are facing in driving<br>"
+				+ "direction. Values up to 45 degrees should be fine, use everything<br>"
+				+ "above at your own risk.</html>");
 		spnCamber.setModel(new SpinnerNumberModel(0.0, -90.0, 90.0, 0.1));
 		spnCamber.addChangeListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
 			seg.camber = (double) spnCamber.getValue();
 			updateHelperImages();
 			update();
 		});
-		add(spnCamber, "flowx,cell 1 6,growx");
+		add(spnCamber, "x=1; y=last");
 
-		JLabel label_1 = new JLabel("°");
-		add(label_1, "cell 1 6");
+		JLabel lblCamberUnits = new JLabel("\u00BA");
+		lblCamberUnits.setPreferredSize(new Dimension(20, 20));
+		add(lblCamberUnits, "x=2; y=last");
+
+		/* --------------------------------------------------- */
 
 		ready = true;
 
@@ -190,30 +218,30 @@ public class TrackSegmentPanel extends JPanel {
 
 		setName(getName(index));
 
-		JPanel panel = new JPanel();
-		add(panel, "cell 0 7 2 1,growx");
-		panel.setLayout(new GridLayout(1, 0, 4, 0));
+		JPanel lowerButtonPanel = new JPanel();
+		add(lowerButtonPanel, "x=0; y=last+1; colspan=3");
+		lowerButtonPanel.setLayout(new GridLayout(1, 0, 4, 0));
 
 		JButton btnInsert = new JButton("Add");
-		panel.add(btnInsert);
+		lowerButtonPanel.add(btnInsert);
 		btnInsert.addActionListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
 			TrackEditor.instance.addSegment(this);
 		});
 
 		JButton btnSplit = new JButton("Split");
 		btnSplit.addActionListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
 			TrackEditor.instance.splitSegment(this);
 		});
-		panel.add(btnSplit);
+		lowerButtonPanel.add(btnSplit);
 
 		JButton btnDelete = new JButton("Delete");
-		panel.add(btnDelete);
+		lowerButtonPanel.add(btnDelete);
 		btnDelete.addActionListener(e -> {
-			if(!ready)
+			if (!ready)
 				return;
 			TrackEditor.instance.deleteSegment(this);
 		});
@@ -234,7 +262,7 @@ public class TrackSegmentPanel extends JPanel {
 		sldSport.setValue(seg.sportiness);
 		spnCamber.setValue(seg.camber);
 
-		switch(seg.getType()) {
+		switch (seg.getType()) {
 		case LEFT:
 			setTurn(false);
 			cmbType.setSelectedIndex(1);
@@ -260,7 +288,7 @@ public class TrackSegmentPanel extends JPanel {
 				+ "bother with how long a sloped track segment really is when driving<br>"
 				+ "over it. Just define the track out of the bird-view.</html>");
 		spnLength.setModel(new SpinnerNumberModel(1.0, 0.0, 100000.0, 0.1));
-		if(reset) {
+		if (reset) {
 			seg.layoutInfo = 50.0;
 			seg.cornerRadius = 0.0;
 			spnRadius.setValue(0.0);
@@ -270,7 +298,7 @@ public class TrackSegmentPanel extends JPanel {
 		}
 		spnRadius.setEnabled(false);
 		lblLength.setText("Length");
-		lblLengthSub.setText("m");
+		lblLengthUnits.setText("m");
 	}
 
 	private void setTurn(boolean reset) {
@@ -279,7 +307,7 @@ public class TrackSegmentPanel extends JPanel {
 				+ "bother with how long a sloped track segment really is when driving<br>"
 				+ "over it. Just define the track out of the bird-view.</html>");
 		spnLength.setModel(new SpinnerNumberModel(1.0, 0.1, 360.0, 0.1));
-		if(reset) {
+		if (reset) {
 			seg.layoutInfo = 45.0;
 			seg.cornerRadius = 20.0;
 			spnLength.setValue(45.0);
@@ -289,7 +317,7 @@ public class TrackSegmentPanel extends JPanel {
 		}
 		spnRadius.setEnabled(true);
 		lblLength.setText("Angle");
-		lblLengthSub.setText("°");
+		lblLengthUnits.setText("\u00BA");
 	}
 
 	private void updateHelperImages() {
@@ -298,7 +326,7 @@ public class TrackSegmentPanel extends JPanel {
 	}
 
 	private void update() {
-		if(!ready) {
+		if (!ready) {
 			return;
 		}
 		TrackEditor.instance.updatePageName(this);

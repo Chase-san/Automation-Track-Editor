@@ -44,6 +44,7 @@ public class TrackFactory {
 		LuaTable table2 = (LuaTable) table.get("Start");
 		track.startX = table2.get(1).toint();
 		track.startY = table2.get(2).toint();
+		track.startAngle = -table.get("Start_Angle").todouble();
 		track.scale = table.get("Scale").todouble();
 		track.split1 = table.get("Split1").todouble();
 		track.split2 = table.get("Split2").todouble();
@@ -151,6 +152,7 @@ public class TrackFactory {
 		buf.append("Track = {\n");
 		buf.append("\tName = \"" + track.name + "\",\n");
 		buf.append("\tStart = { " + track.startX + ", " + track.startY + " },\n");
+		buf.append("\tStart_Angle = " + ftswmp(-track.startAngle) + "\n");
 		buf.append("\tScale = " + ftswmp(track.scale) + ",\n");
 
 		buf.append("\tLayout = {");

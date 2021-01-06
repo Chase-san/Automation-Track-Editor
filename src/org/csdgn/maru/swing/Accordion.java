@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2013 Robert Maupin
+ * Copyright (c) 2011-2021 Robert Maupin
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.maru;
+package org.csdgn.maru.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

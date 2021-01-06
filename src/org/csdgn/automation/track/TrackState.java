@@ -16,7 +16,7 @@ public class TrackState {
 		this.track = track;
 		this.x = track.startX;
 		this.y = track.startY;
-		this.angle = 0;
+		this.angle = track.startAngle;
 		this.length = 0;
 		this.elevation = 0;
 		this.shape = null;

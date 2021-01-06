@@ -69,18 +69,21 @@ public class AboutDialog extends JDialog {
 		txtpnInfobox.setEditable(false);
 		txtpnInfobox.setContentType("text/html");
 		txtpnInfobox.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
-		txtpnInfobox
-				.setText("<html>Copyright © 2014-2015 Robert Maupin (BitTwiddler)<br>"
-						+ "Made for <a href=\"http://automationgame.com/\">Automation</a> by Camshaft Software.<br>"
-						+ "Hosted by <a href=\"http://www.automationhub.net/\">AutomationHub</a>.<br>"
-						+ "<p>TrackEdit was made for no other reason then I was unaware at the time that a track editor like it already existed for Automation> Lacking this knowledge I set to my task without any kind of preconception of how it should function. Thanks to all the people on the automation forum who made this program possible.</p></html>");
+		txtpnInfobox.setText("<html>Copyright \u00A9 2014-2021 Robert Maupin (BitTwiddler/Chase-san)<br>"
+				+ "Made for <a href=\"http://automationgame.com/\">Automation</a> by Camshaft Software.<br>"
+				+ "Proudly hosted by <a href=\"http://www.github.com/\">GitHub</a>.<br>"
+				+ "<p><a href=\"https://github.com/Chase-san/Automation-Track-Editor/releases\">Click here for the latest release.</a></p>"
+				+ "<p>TrackEdit was made for no other reason then I was unaware at the time that a track editor like "
+				+ "it already existed for Automation. Lacking this knowledge I set to my task without any kind of "
+				+ "preconception of how it should function. Thanks to all the people on the automation forum who "
+				+ "made this program possible.</p></html>");
 		txtpnInfobox.setOpaque(false);
 		txtpnInfobox.addHyperlinkListener(e -> {
-			if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-				if(Desktop.isDesktopSupported())
+			if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+				if (Desktop.isDesktopSupported())
 					try {
 						Desktop.getDesktop().browse(e.getURL().toURI());
-					} catch(Exception e1) {
+					} catch (Exception e1) {
 					}
 			}
 		});
