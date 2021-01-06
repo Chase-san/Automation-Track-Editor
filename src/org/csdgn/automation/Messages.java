@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2021 Robert Maupin
+ * Copyright (c) 2021 Robert Maupin
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -20,10 +20,35 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-package org.csdgn.automation.track;
+package org.csdgn.automation;
 
-public interface ITrackWalker {
-	public TrackState nextState(TrackState state, TrackSegment segment);
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
-	public TrackState nextSimState(TrackState state, TrackSegment segment);
+public class Messages {
+	private static final String BUNDLE_NAME = "org.csdgn.automation.us-en";
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+
+	private Messages() {
+	}
+
+	public static String getString(String key) {
+		try {
+			return RESOURCE_BUNDLE.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
+		}
+	}
+	
+	public static String getTitle() {
+		return getString("Title");
+	}
+	
+	public static String getVersion() {
+		return getString("Version");
+	}
+	
+	public static String getTitleAndVersion() {
+		return String.format("%s v%s", getTitle(), getVersion());
+	}
 }

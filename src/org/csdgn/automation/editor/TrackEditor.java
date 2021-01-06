@@ -1,3 +1,25 @@
+/**
+ * Copyright (c) 2014-2021 Robert Maupin
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 
+ *    2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
 package org.csdgn.automation.editor;
 
 import java.awt.BorderLayout;
@@ -7,8 +29,6 @@ import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,11 +60,10 @@ import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.csdgn.automation.Track2DRenderer;
-import org.csdgn.automation.TrackElevationChart;
-import org.csdgn.automation.TrackFactory;
-import org.csdgn.automation.TrackRunner;
-import org.csdgn.automation.TrackElevationChart.ElevationData;
+import org.csdgn.automation.Messages;
+import org.csdgn.automation.TrackFileManager;
+import org.csdgn.automation.TrackMapper;
+import org.csdgn.automation.editor.TrackElevationChart.ElevationData;
 import org.csdgn.automation.track.*;
 import org.csdgn.maru.AppToolkit;
 import org.csdgn.maru.Files;
@@ -81,7 +100,6 @@ public class TrackEditor extends JFrame {
 
 	private static final long serialVersionUID = 1183587866699616635L;
 
-	public static final String VERSION = "TrackEdit v0.15";
 	public static final String SETTINGS = "trackedit.cfg";
 
 	private JPanel chartPanel;
@@ -110,7 +128,7 @@ public class TrackEditor extends JFrame {
 
 	private Track track;
 	private Track2DRenderer trackRenderer;
-	private TrackRunner trackRunner;
+	private TrackMapper trackRunner;
 	private JTextField txtName;
 	private JLabel lblEleEnds;
 	private JLabel lblEleDiff;
@@ -135,7 +153,7 @@ public class TrackEditor extends JFrame {
 
 		trackRenderer = new Track2DRenderer();
 
-		setTitle(VERSION);
+		setTitle(Messages.getTitleAndVersion());
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		JSplitPane imageSplit = new JSplitPane();
@@ -613,7 +631,7 @@ public class TrackEditor extends JFrame {
 		ready = false;
 
 		try {
-			track = TrackFactory.load(file);
+			track = TrackFileManager.load(file);
 		} catch (Exception e) {
 			AppToolkit.showError(instance, e.getMessage());
 			ready = true;
@@ -675,7 +693,7 @@ public class TrackEditor extends JFrame {
 			saveAs();
 		}
 
-		Files.setFileContents(new File(path, "track.lua"), TrackFactory.generateLua(track), StandardCharsets.UTF_8);
+		Files.setFileContents(new File(path, "track.lua"), TrackFileManager.generateLua(track), StandardCharsets.UTF_8);
 		if (track.image == null) {
 			try {
 				ImageIO.write(trackRenderer.render(trackRunner), "png", new File(path, "track.png"));
@@ -714,7 +732,7 @@ public class TrackEditor extends JFrame {
 
 			try {
 				properties.store(new FileWriter(new File(AppToolkit.getLocalDirectory(), SETTINGS)),
-						VERSION + " configuration file");
+						Messages.getTitleAndVersion() + " configuration file");
 			} catch (IOException e) {
 				// ignore failure here as well
 			}
@@ -726,7 +744,7 @@ public class TrackEditor extends JFrame {
 
 		rbmiPrecise.setSelected(true);
 
-		trackRunner = new TrackRunner(track);
+		trackRunner = new TrackMapper(track);
 		ElevationData ted = TrackElevationChart.createElevationData(trackRunner);
 		chartPanel.removeAll();
 		chartPanel.add(TrackElevationChart.createChart(ted));
@@ -847,7 +865,7 @@ public class TrackEditor extends JFrame {
 
 	protected void updateTitle() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(VERSION);
+		sb.append(Messages.getTitleAndVersion());
 		if (track != null) {
 			sb.append(" - ");
 			sb.append(track.name);

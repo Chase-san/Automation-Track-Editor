@@ -1,3 +1,25 @@
+/**
+ * Copyright (c) 2014-2021 Robert Maupin
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 
+ *    2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
 package org.csdgn.automation.editor;
 
 import javax.swing.JDialog;
@@ -19,6 +41,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
 
+import org.csdgn.automation.Messages;
 import org.csdgn.maru.AppToolkit;
 
 public class AboutDialog extends JDialog {
@@ -31,8 +54,8 @@ public class AboutDialog extends JDialog {
 		super(owner);
 		setModal(true);
 		setResizable(false);
-		setTitle("About " + TrackEditor.VERSION);
-		setBounds(100, 100, 400, 270);
+		setTitle(String.format("%s %s", Messages.getString("AboutAbout"), Messages.getTitleAndVersion()));
+		setBounds(100, 100, 400, 350);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		JPanel content = new JPanel();
@@ -44,21 +67,19 @@ public class AboutDialog extends JDialog {
 		content.add(panel, BorderLayout.NORTH);
 		panel.setLayout(new BorderLayout(4, 4));
 
-		JLabel lblBate = new JLabel("TrackEdit");
+		JLabel lblBate = new JLabel(Messages.getString("Title"));
 		lblBate.setIconTextGap(32);
 		lblBate.setIcon(new ImageIcon(AppToolkit.getAppIconImages().get(2)));
 		lblBate.setHorizontalAlignment(SwingConstants.CENTER);
 		lblBate.setFont(new Font("Tahoma", Font.BOLD, 36));
 		panel.add(lblBate, BorderLayout.CENTER);
 
-		JLabel lblBittwiddlersAutomationTrack = new JLabel("Automation Track Editor");
-		lblBittwiddlersAutomationTrack.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(lblBittwiddlersAutomationTrack, BorderLayout.SOUTH);
+		panel.add(new JLabel(Messages.getString("TitleDesc"), SwingConstants.CENTER), BorderLayout.SOUTH);
 
 		JPanel panel_1 = new JPanel();
 		content.add(panel_1, BorderLayout.SOUTH);
 
-		JButton btnOkay = new JButton("OK");
+		JButton btnOkay = new JButton(Messages.getString("ButtonOK"));
 		btnOkay.addActionListener(e -> {
 			dispose();
 		});
@@ -69,14 +90,15 @@ public class AboutDialog extends JDialog {
 		txtpnInfobox.setEditable(false);
 		txtpnInfobox.setContentType("text/html");
 		txtpnInfobox.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
-		txtpnInfobox.setText("<html>Copyright \u00A9 2014-2021 Robert Maupin (BitTwiddler/Chase-san)<br>"
-				+ "Made for <a href=\"http://automationgame.com/\">Automation</a> by Camshaft Software.<br>"
-				+ "Proudly hosted by <a href=\"http://www.github.com/\">GitHub</a>.<br>"
-				+ "<p><a href=\"https://github.com/Chase-san/Automation-Track-Editor/releases\">Click here for the latest release.</a></p>"
-				+ "<p>TrackEdit was made for no other reason then I was unaware at the time that a track editor like "
-				+ "it already existed for Automation. Lacking this knowledge I set to my task without any kind of "
-				+ "preconception of how it should function. Thanks to all the people on the automation forum who "
-				+ "made this program possible.</p></html>");
+		
+		txtpnInfobox.setText(String.format("<html>%s<br>%s<br>%s<p>%s</p><p>%s</p></html>",
+				Messages.getString("AboutCopyright"),
+				Messages.getString("AboutMadeFor"),
+				Messages.getString("AboutHostedBy"),
+				Messages.getString("AboutUpdate"),
+				Messages.getString("AboutDesc"))
+			);
+		
 		txtpnInfobox.setOpaque(false);
 		txtpnInfobox.addHyperlinkListener(e -> {
 			if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {

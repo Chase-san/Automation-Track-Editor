@@ -1,3 +1,25 @@
+/**
+ * Copyright (c) 2014-2021 Robert Maupin
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 
+ *    2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
 package org.csdgn.automation;
 
 import java.awt.Shape;
@@ -10,14 +32,14 @@ import org.csdgn.automation.track.Track;
 import org.csdgn.automation.track.TrackSegment;
 import org.csdgn.automation.track.TrackState;
 
-public class TrackRunner {
+public class TrackMapper {
 	private ArrayList<TrackState> states;
 	private Track track;
 	private double elevationDifference;
 	private boolean dirty;
 	private boolean simulate = false;
 
-	public TrackRunner(Track track) {
+	public TrackMapper(Track track) {
 		this.states = new ArrayList<TrackState>();
 		this.track = track;
 		this.dirty = true;
@@ -70,7 +92,7 @@ public class TrackRunner {
 		return track;
 	}
 
-	protected ArrayList<TrackState> states() {
+	public ArrayList<TrackState> states() {
 		if(dirty) {
 			run();
 		}
