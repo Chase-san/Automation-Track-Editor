@@ -26,7 +26,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Messages {
-	private static final String BUNDLE_NAME = "org.csdgn.automation.us-en";
+	private static final String BUNDLE_NAME = "org.csdgn.automation.en-us";
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
 	private Messages() {
@@ -39,15 +39,15 @@ public class Messages {
 			return '!' + key + '!';
 		}
 	}
-	
+
 	public static String getTitle() {
 		return getString("Title");
 	}
-	
+
 	public static String getVersion() {
 		return getString("Version");
 	}
-	
+
 	public static String getTitleAndVersion() {
 		return String.format("%s v%s", getTitle(), getVersion());
 	}

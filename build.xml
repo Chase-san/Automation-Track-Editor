@@ -5,6 +5,7 @@
 
 	<property name="out.dir" value="dispatch" />
 	<property name="lib.dir" value="lib" />
+	<property name="src.dir" value="src" />
 	<property name="resource.dir" value="resource" />
 
 	<path id="build.classpath">
@@ -26,7 +27,7 @@
 
 		<!-- Compile the source -->
 		<!-- Modern Java 11+ uses "release" attribute, we still compile for an older version however. -->
-		<javac srcdir="src" destdir="bin" includeAntRuntime="no" encoding="UTF-8" classpathref="build.classpath" fork="true" optimize="on" release="8" debug="on">
+		<javac srcdir="${src.dir}" destdir="bin" includeAntRuntime="no" encoding="UTF-8" classpathref="build.classpath" fork="true" optimize="on" release="8" debug="on">
 			<compilerarg value="-Xlint" />
 		</javac>
 	</target>
@@ -54,6 +55,7 @@
 
 		<!-- add resources to zip file -->
 		<zip destfile="${out.dir}/${jar.file}" basedir="${resource.dir}" update="true" />
+		<zip destfile="${out.dir}/${jar.file}" basedir="${src.dir}" includes="**/*.properties" update="true" />
 	</target>
 
 	<target name="package" depends="dispatch">
